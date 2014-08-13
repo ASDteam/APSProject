@@ -1,0 +1,31 @@
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/id_player_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/densidp2"
+        android:scaleType="fitXY"
+        android:src="@drawable/football_player" >
+        
+    </ImageView>
+
+    <TextView
+        android:id="@+id/id_player_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@drawable/transparent_rectangle"
+        android:ellipsize="end"
+        android:gravity="bottom|center_horizontal"
+        android:lines="1"
+        android:padding="@dimen/densidp2"
+        android:text="Yaya Toure"
+        android:textColor="@color/Blue"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+</FrameLayout>

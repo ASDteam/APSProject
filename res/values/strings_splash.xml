@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="splash_image_content_description">Spash image</string>
+    <string name="project_image_content_description">Project logo</string>
+
+
+</resources>
