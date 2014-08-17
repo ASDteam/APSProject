@@ -1,5 +1,12 @@
 package com.asp.aspproject.coach;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import android.R.integer;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
@@ -7,39 +14,38 @@ import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
 import android.widget.Toast;
+
 import com.asp.aspproject.R;
 import com.asp.aspproject.coach.utils.Constants;
+import com.asp.aspproject.field.SystenField;
 
-public class PlayersOnPitchFragment extends Fragment{
+public class PlayersOnPitchFragment extends Fragment implements OnClickListener{
 
-	private ISystemSelection mSystemSelection;
+	public static final String CURRENT_SYSTEM = "CURRENT_SYSTEM";
 
-	//stricker
-	private View mContainerPlayer00 = null;
-	private View mContainerPlayer01 = null;
-	private View mContainerPlayer02 = null;
-	private View mContainerPlayer03 = null;
-	private View mContainerPlayer04 = null;
 
-	//middlefielders
-	private View mContainerPlayer10 = null;
-	private View mContainerPlayer11 = null;
-	private View mContainerPlayer12 = null;
-	private View mContainerPlayer13 = null;
-	private View mContainerPlayer14 = null;
+	private IPositionSelection mPositionSelection;
 
-	//defenders
-	private View mContainerPlayer20 = null;
-	private View mContainerPlayer21 = null;
-	private View mContainerPlayer22 = null;
-	private View mContainerPlayer23 = null;
-	private View mContainerPlayer24 = null;
 
-	//goalkeeper
-	private View mContainerPlayer30 = null;
+	private TableLayout mTableLayout = null;
 
+	private SystenField mCurrentSysten = null;
+
+	private HashMap<String, Integer> mSelectedPlayers = null;
+
+
+
+	public PlayersOnPitchFragment() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 
 
 	@Override
@@ -48,56 +54,36 @@ public class PlayersOnPitchFragment extends Fragment{
 	}
 
 
+	@SuppressLint("NewApi")
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		View view =  inflater.inflate(R.layout.players_on_pitch, container, false);   	
-		
-		mContainerPlayer00 =  view.findViewById(R.id.parent_player00);
-		mContainerPlayer01 =  view.findViewById(R.id.parent_player01);
-		mContainerPlayer02 =  view.findViewById(R.id.parent_player02);
-		mContainerPlayer03 =  view.findViewById(R.id.parent_player03);
-		mContainerPlayer04 =  view.findViewById(R.id.parent_player04);
-		
-		mContainerPlayer10 =  view.findViewById(R.id.parent_player10);
-		mContainerPlayer11 =  view.findViewById(R.id.parent_player11);
-		mContainerPlayer12 =  view.findViewById(R.id.parent_player12);
-		mContainerPlayer13 =  view.findViewById(R.id.parent_player13);
-		mContainerPlayer14 =  view.findViewById(R.id.parent_player14);
-		
-		mContainerPlayer20 =  view.findViewById(R.id.parent_player20);
-		mContainerPlayer21 =  view.findViewById(R.id.parent_player21);
-		mContainerPlayer22 =  view.findViewById(R.id.parent_player22);
-		mContainerPlayer23 =  view.findViewById(R.id.parent_player23);
-		mContainerPlayer24 =  view.findViewById(R.id.parent_player24);
-		
-		
-		
-		mContainerPlayer30 =  view.findViewById(R.id.parent_player30);
-		/*mContainerPlayer30.findViewById(R.id.player30).setOnClickListener(new View.OnClickListener() {
-	
-			public void onClick(View v) {
-				Toast.makeText(PlayersOnPitchFragment.this.getActivity(), "player30 ", Toast.LENGTH_LONG);
-				
+
+		mTableLayout = (TableLayout) view.findViewById(R.id.players_on_pitch_container_table);
+
+		if (mCurrentSysten !=null)
+		{
+			updateSystemView(mCurrentSysten.getmSystem(), false);
+
+			if (mSelectedPlayers != null && !mSelectedPlayers.isEmpty())
+			{
+				for (Entry<String, Integer> entry : mSelectedPlayers.entrySet()) {
+
+					updatePosition(entry.getValue(), entry.getKey());
+				} 
 			}
-		});
-		
-		mContainerPlayer30.setOnClickListener(new View.OnClickListener() {
-	
-			public void onClick(View v) {
-				Toast.makeText(PlayersOnPitchFragment.this.getActivity(), "mContainerPlayer30 ", Toast.LENGTH_LONG);
-				
-			}
-		});*/
-		
-		
+		}
+
 		return view;
 	}
 
+	@SuppressLint("NewApi")
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState)
 	{
 		super.onActivityCreated(savedInstanceState);
+
 	}
 
 
@@ -109,179 +95,363 @@ public class PlayersOnPitchFragment extends Fragment{
 		// This makes sure that the container activity has implemented
 		// the callback interface. If not, it throws an exception
 		try {
-			mSystemSelection = (ISystemSelection) activity;
+			mPositionSelection = (IPositionSelection) activity;
 		} catch (ClassCastException e) {
 			throw new ClassCastException(activity.toString()
 					+ " must implement ISystemSelection");
 		}
 
-		//Log.d("mSystemSelection", mSystemSelection.onSystemSelected(iSystem);)
+		//Log.d("mPositionSelection", mPositionSelection.onSystemSelected(iSystem);)
 
 	}
 
-	public void setView442()
+	@Override
+	public void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+	}
+
+
+	public void setView442(boolean cleanView)
 	{
 		Log.d(Constants.PLAYERS_ON_PITCH_FRAGMENTTAG, "setView442");
-		
-		init();
-		//striker
-		mContainerPlayer00.setVisibility(View.GONE); 
-		mContainerPlayer01.setVisibility(View.GONE); 
-		mContainerPlayer02.setVisibility(View.GONE); 
-		
-		//midfielders
-		mContainerPlayer10.setVisibility(View.GONE);
-		
-		//defenders
-		mContainerPlayer20.setVisibility(View.GONE);
 
+		mCurrentSysten = new SystenField("442");
+
+		initViews(cleanView);
+
+		int[] a442List = {/*striker */R.id.parent_player00, R.id.parent_player01,
+				/*midfielders*/R.id.parent_player10, R.id.parent_player11, R.id.parent_player12, R.id.parent_player13,
+				/*defenders */ R.id.parent_player20, R.id.parent_player21, R.id.parent_player22, R.id.parent_player23,
+				/*goalkeeper*/R.id.parent_player30};
+
+		makeViewsVisible(a442List);
+
+		setClickListener();
 
 	}
 
-	public void setView433()
+	public void setView433(boolean cleanView)
 	{
 		Log.d(Constants.PLAYERS_ON_PITCH_FRAGMENTTAG, "setView433");
-		
-		init();
-		//striker
-		mContainerPlayer00.setVisibility(View.GONE); 
-		mContainerPlayer01.setVisibility(View.GONE); 
-		
-		//midfielders
-		mContainerPlayer10.setVisibility(View.GONE);
-		mContainerPlayer11.setVisibility(View.GONE);
-		
-		//defenders
-		mContainerPlayer20.setVisibility(View.GONE);
+
+		mCurrentSysten = new SystenField("433");
+
+		initViews(cleanView);
+
+		int[] a433List = {/*striker */R.id.parent_player00, R.id.parent_player01, R.id.parent_player02,
+				/*midfielders*/R.id.parent_player10, R.id.parent_player11, R.id.parent_player12,
+				/*defenders */ R.id.parent_player20, R.id.parent_player21, R.id.parent_player22,  R.id.parent_player23,
+				/*goalkeeper*/R.id.parent_player30};
+
+		makeViewsVisible(a433List);
+
+		setClickListener();
+
 
 	}
 
 
-	public void setView451()
+	public void setView451(boolean cleanView)
 	{
 		Log.d(Constants.PLAYERS_ON_PITCH_FRAGMENTTAG, "setView451");
-		init();
-		
-		//striker
-		mContainerPlayer00.setVisibility(View.GONE); 
-		mContainerPlayer01.setVisibility(View.GONE); 
-		mContainerPlayer02.setVisibility(View.GONE); 
-		mContainerPlayer03.setVisibility(View.GONE); 
-	
-		
-		//defenders
-		mContainerPlayer20.setVisibility(View.GONE);
+
+		mCurrentSysten = new SystenField("451");
+
+		initViews(cleanView);
+
+		int[] a451List = {/*striker */R.id.parent_player00,
+				/*midfielders*/R.id.parent_player10, R.id.parent_player11, R.id.parent_player12, R.id.parent_player13, R.id.parent_player14,
+				/*defenders */ R.id.parent_player20, R.id.parent_player21, R.id.parent_player22, R.id.parent_player23,
+				/*goalkeeper*/R.id.parent_player30};
+
+		makeViewsVisible(a451List);
+
+		setClickListener();
 
 	}
 
-	public void setView541()
+	public void setView541(boolean cleanView)
 	{
 		Log.d(Constants.PLAYERS_ON_PITCH_FRAGMENTTAG, "setView541");
 
-		init();
-		//striker
-		mContainerPlayer00.setVisibility(View.GONE); 
-		mContainerPlayer01.setVisibility(View.GONE); 
-		mContainerPlayer02.setVisibility(View.GONE); 
-		mContainerPlayer03.setVisibility(View.GONE);
+		mCurrentSysten = new SystenField("541");
 
-		//midfielders
-		mContainerPlayer10.setVisibility(View.GONE);
+		initViews(cleanView);
+
+		int[] a541List = {/*striker */R.id.parent_player00,
+				/*midfielders*/R.id.parent_player10, R.id.parent_player11, R.id.parent_player12, R.id.parent_player13,
+				/*defenders */ R.id.parent_player20, R.id.parent_player21, R.id.parent_player22, R.id.parent_player23, R.id.parent_player24,
+				/*goalkeeper*/R.id.parent_player30};
+
+		makeViewsVisible(a541List);
+
+		setClickListener();
 
 
 	}
-	public void setView532()
+	public void setView532(boolean cleanView)
 	{
 		Log.d(Constants.PLAYERS_ON_PITCH_FRAGMENTTAG, "setView532");
-		init();
-		//striker
-		mContainerPlayer00.setVisibility(View.GONE); 
-		mContainerPlayer01.setVisibility(View.GONE); 
-		mContainerPlayer02.setVisibility(View.GONE); 
-		
-		//midfielders
-		mContainerPlayer10.setVisibility(View.GONE);
-		mContainerPlayer11.setVisibility(View.GONE);
 
+		mCurrentSysten = new SystenField("532");
+
+		initViews(cleanView);
+
+		int[] a532List = {/*striker */R.id.parent_player00, R.id.parent_player01,
+				/*midfielders*/R.id.parent_player10, R.id.parent_player11, R.id.parent_player12,
+				/*defenders */ R.id.parent_player20, R.id.parent_player21, R.id.parent_player22, R.id.parent_player23, R.id.parent_player24,
+				/*goalkeeper*/R.id.parent_player30};
+
+		makeViewsVisible(a532List);
+
+		setClickListener();
 
 	}
-	public void setView523()
+	public void setView523(boolean cleanView)
 	{
 		Log.d(Constants.PLAYERS_ON_PITCH_FRAGMENTTAG, "setView523");
-		init();
-		//striker
-		mContainerPlayer00.setVisibility(View.GONE); 
-		mContainerPlayer01.setVisibility(View.GONE); 
-		
-		//midfielders
-		mContainerPlayer10.setVisibility(View.GONE);
-		mContainerPlayer11.setVisibility(View.GONE);
-		mContainerPlayer12.setVisibility(View.GONE);
-		
 
+		mCurrentSysten = new SystenField("523");
 
+		initViews(cleanView);
+
+		int[] a523List = {/*striker */R.id.parent_player00, R.id.parent_player01,  R.id.parent_player02,
+				/*midfielders*/R.id.parent_player10, R.id.parent_player11,
+				/*defenders */ R.id.parent_player20, R.id.parent_player21, R.id.parent_player22, R.id.parent_player23, R.id.parent_player24,
+				/*goalkeeper*/R.id.parent_player30};
+
+		makeViewsVisible(a523List);
+
+		setClickListener();
 	}
 
-	public void setView343()
+	public void setView343(boolean cleanView)
 	{
 		Log.d(Constants.PLAYERS_ON_PITCH_FRAGMENTTAG, "setView343");
-		init();
-		//striker
-		mContainerPlayer00.setVisibility(View.GONE); 
-		mContainerPlayer01.setVisibility(View.GONE); 
-		
-		//midfielders
-		mContainerPlayer10.setVisibility(View.GONE);
-		
-		//defenders
-		mContainerPlayer20.setVisibility(View.GONE);
-		mContainerPlayer21.setVisibility(View.GONE);
+
+		mCurrentSysten = new SystenField("343");
+
+		initViews(cleanView);
+
+		int[] a343List = {/*striker */R.id.parent_player00, R.id.parent_player01,  R.id.parent_player02,
+				/*midfielders*/R.id.parent_player10, R.id.parent_player11, R.id.parent_player12, R.id.parent_player13,
+				/*defenders */ R.id.parent_player20, R.id.parent_player21, R.id.parent_player22,
+				/*goalkeeper*/R.id.parent_player30};
+
+		makeViewsVisible(a343List);
+
+		setClickListener();
 
 	}
 
-	public void setView352()
+	public void setView352(boolean cleanView)
 	{
 		Log.d(Constants.PLAYERS_ON_PITCH_FRAGMENTTAG, "setView352");
-		init();
-		//striker
-		mContainerPlayer00.setVisibility(View.GONE); 
-		mContainerPlayer01.setVisibility(View.GONE); 
-		mContainerPlayer02.setVisibility(View.GONE);
 
-		//defenders
-		mContainerPlayer20.setVisibility(View.GONE);
-		mContainerPlayer21.setVisibility(View.GONE);
+		initViews(cleanView);
+
+		int[] a352List = {/*striker */R.id.parent_player00, R.id.parent_player01, 
+				/*midfielders*/R.id.parent_player10, R.id.parent_player11, R.id.parent_player12, R.id.parent_player13, R.id.parent_player14,
+				/*defenders */ R.id.parent_player20, R.id.parent_player21, R.id.parent_player22,
+				/*goalkeeper*/R.id.parent_player30};
+
+		makeViewsVisible(a352List);
+
+		setClickListener();
 
 	}
 
 
-	
-	public void init(){
+
+	public void initViews(boolean cleanView){
 		
-		mContainerPlayer00.setVisibility(View.VISIBLE);
-		mContainerPlayer01.setVisibility(View.VISIBLE);
-		mContainerPlayer02.setVisibility(View.VISIBLE);
-		mContainerPlayer03.setVisibility(View.VISIBLE);
-		mContainerPlayer04.setVisibility(View.VISIBLE);
-		
-		mContainerPlayer10.setVisibility(View.VISIBLE);
-		mContainerPlayer11.setVisibility(View.VISIBLE);
-		mContainerPlayer12.setVisibility(View.VISIBLE);
-		mContainerPlayer13.setVisibility(View.VISIBLE);
-		mContainerPlayer14.setVisibility(View.VISIBLE);
-		
-		mContainerPlayer20.setVisibility(View.VISIBLE);
-		mContainerPlayer21.setVisibility(View.VISIBLE);
-		mContainerPlayer22 .setVisibility(View.VISIBLE);
-		mContainerPlayer23.setVisibility(View.VISIBLE);
-		mContainerPlayer24.setVisibility(View.VISIBLE);
-		
-		
-		
-		mContainerPlayer30.setVisibility(View.VISIBLE);
-		
+		if (cleanView && mSelectedPlayers !=null)
+		{
+			mSelectedPlayers.clear();
+		}
+
+		for (int rowIndex = 0; rowIndex < mTableLayout.getChildCount(); rowIndex++) {
+			View child = mTableLayout.getChildAt(rowIndex);
+
+			if (child instanceof TableRow) {
+				TableRow aRow = (TableRow) child;
+
+				for (int playerContaninerIndex = 0; playerContaninerIndex < aRow.getChildCount(); playerContaninerIndex++) {
+					View aPlayerContaniner = aRow.getChildAt(playerContaninerIndex);
+
+					if ( aPlayerContaniner instanceof ViewGroup && ((LinearLayout) aPlayerContaniner).getChildCount() > 0)
+					{
+						View aPlayerView = ((ViewGroup) aPlayerContaniner).getChildAt(0);
+						((TextView)aPlayerView.findViewById(R.id.id_player_name)).setText(null);
+					}
+
+					aPlayerContaniner.setVisibility(View.GONE);
+				}
+			}
+		}
+
 	}
+
+	public void makeViewsVisible(int[] viewIds){
+
+		for (int rowIndex = 0; rowIndex < mTableLayout.getChildCount(); rowIndex++) {
+			View child = mTableLayout.getChildAt(rowIndex);
+
+			if (child instanceof TableRow) {
+				TableRow aRow = (TableRow) child;
+
+				for (int playerContaninerIndex = 0; playerContaninerIndex < aRow.getChildCount(); playerContaninerIndex++) {
+					View aPlayerContaniner = aRow.getChildAt(playerContaninerIndex);
+					for (int visibleViewIndex = 0; visibleViewIndex < viewIds.length; visibleViewIndex++) 
+					{
+						if (viewIds[visibleViewIndex] == aPlayerContaniner.getId())
+						{
+							aPlayerContaniner.setVisibility(View.VISIBLE);
+							break;
+
+						}
+
+					}
+				}
+			}
+		}
+
+
+	}
+
+
+	public void setClickListener()
+	{
+
+		for (int rowIndex = 0; rowIndex < mTableLayout.getChildCount(); rowIndex++) {
+			View child = mTableLayout.getChildAt(rowIndex);
+
+			if (child instanceof TableRow) {
+				TableRow aRow = (TableRow) child;
+
+				for (int playerContaninerIndex = 0; playerContaninerIndex < aRow.getChildCount(); playerContaninerIndex++) {
+					View aPlayerContaniner = aRow.getChildAt(playerContaninerIndex);
+
+					if (aPlayerContaniner.getVisibility() == View.VISIBLE && aPlayerContaniner instanceof ViewGroup && ((LinearLayout) aPlayerContaniner).getChildCount() > 0)
+					{
+						View aPlayerView = ((ViewGroup) aPlayerContaniner).getChildAt(0);
+						aPlayerView.setOnClickListener(this);
+					}
+				}
+			}
+		}
+
+	}
+
+	@Override
+	public void onClick(View view) {
+
+		//Toast.makeText(PlayersOnPitchFragment.this.getActivity(), "view : " + view.getId(), Toast.LENGTH_SHORT).show();
+		mPositionSelection.onPosisionSelected(view.getId());
+	}
+
+	public void updatePosition(int viewId, String playerName)
+	{
+
+		for (int rowIndex = 0; rowIndex < mTableLayout.getChildCount(); rowIndex++) {
+			View child = mTableLayout.getChildAt(rowIndex);
+
+			if (child instanceof TableRow) {
+				TableRow aRow = (TableRow) child;
+
+				for (int playerContaninerIndex = 0; playerContaninerIndex < aRow.getChildCount(); playerContaninerIndex++) {
+					View aPlayerContaniner = aRow.getChildAt(playerContaninerIndex);
+					if (aPlayerContaniner.getVisibility() == View.VISIBLE && aPlayerContaniner instanceof ViewGroup && ((LinearLayout) aPlayerContaniner).getChildCount() > 0)
+					{
+						View aPlayerView = ((ViewGroup) aPlayerContaniner).getChildAt(0);
+						if (viewId == aPlayerView.getId())
+						{
+							((TextView)aPlayerView.findViewById(R.id.id_player_name)).setText(playerName);
+							break;
+						}
+					}
+				}
+			}
+
+		}
+
+	}
+
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		// Serialize the current current system choice.
+		super.onSaveInstanceState(outState);
+		if (mCurrentSysten != null)
+		{
+			outState.putString(CURRENT_SYSTEM, mCurrentSysten.getmSystem());
+		}
+	}
+
+	public void updateSystemView(String system, boolean cleanViews)
+	{
+		try
+		{
+			//invoke methods of the PlayersOnPitchFragment
+			Method aMethod;
+
+			String aMethodName = "setView"+ system;
+			aMethod = this.getClass().getMethod(aMethodName, boolean.class);
+
+			aMethod.invoke(this, cleanViews);
+
+		} catch (ClassCastException e) {// not that fragment		
+			e.printStackTrace();
+		}
+		catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	public boolean addPlayer(int viewId, String playerName)
+	{
+		if (mSelectedPlayers == null)
+		{
+			mSelectedPlayers = new HashMap<String, Integer>();
+		}
+		
+		for (Entry<String, Integer> entry : mSelectedPlayers.entrySet()) {
+
+			if (entry.getValue() == viewId)
+			{
+				//if viewId exist in map => second click on the same view
+				mSelectedPlayers.remove(entry.getKey());
+				break;
+			}
+			
+		} 
+
+		if (!mSelectedPlayers.containsKey(playerName))
+		{
+			mSelectedPlayers.put(playerName,viewId);
+			return true;
+		}
+		else
+		{			
+			return false;
+		}
+
+	}
+
 
 
 
 }
+
+
+
+

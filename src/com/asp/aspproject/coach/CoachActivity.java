@@ -2,6 +2,7 @@ package com.asp.aspproject.coach;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
@@ -9,10 +10,12 @@ import android.app.ActionBar.LayoutParams;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -21,13 +24,17 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.Toast;
+
 import com.asp.aspproject.R;
 import com.asp.aspproject.coach.utils.Constants;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-public class CoachActivity extends FragmentActivity implements ActionBar.OnNavigationListener ,  ISystemSelection {
+public class CoachActivity extends FragmentActivity implements ActionBar.OnNavigationListener ,  IPositionSelection, IPlayerSelection {
 
-	private ISystemSelection mSystemSelection;
+	private IPositionSelection mSystemSelection;
+
+	private Spinner mSpinner = null;
 
 	/**
 	 * The serialization (saved instance state) Bundle key representing the
@@ -43,12 +50,11 @@ public class CoachActivity extends FragmentActivity implements ActionBar.OnNavig
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_coach);
 
-		FragmentManager fragmentManager = this.getSupportFragmentManager();
-		FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+		FragmentManager aFragmentManager = this.getSupportFragmentManager();
+		FragmentTransaction aFragmentTransaction = aFragmentManager.beginTransaction();
 		PlayersOnPitchFragment aPlayersOnPitchFragment = new PlayersOnPitchFragment();
-		fragmentTransaction.add(R.id.players_on_pitch_container, aPlayersOnPitchFragment, Constants.PLAYERS_ON_PITCH_FRAGMENTTAG);
-
-		fragmentTransaction.commit();
+		aFragmentTransaction.add(R.id.players_on_pitch_container, aPlayersOnPitchFragment, Constants.PLAYERS_ON_PITCH_FRAGMENTTAG);
+		aFragmentTransaction.commit();
 
 		// Set up the action bar to show a dropdown list.
 		/*final ActionBar actionBar = getActionBar();
@@ -65,30 +71,59 @@ public class CoachActivity extends FragmentActivity implements ActionBar.OnNavig
 
 		LayoutInflater inflater = (LayoutInflater) this.getActionBarThemedContextCompat().getSystemService(LAYOUT_INFLATER_SERVICE);
 
-		    final View spinnerView = inflater.inflate(R.layout.action_bar_spinner, null);
-		    Spinner spinner = (Spinner) spinnerView.findViewById(R.id.action_bar_spinner_id);
-		    ArrayAdapter<String> adapter =	new ArrayAdapter<String>(getActionBarThemedContextCompat(),android.R.layout.simple_list_item_1, android.R.id.text1, SYSTEMS_LIST);
-		    //adapter.setDropDownViewResource(android.R.layout.simple_list_item_1);
-		    spinner.setAdapter(adapter);
+		final View spinnerView = inflater.inflate(R.layout.action_bar_spinner, null);
+		mSpinner = (Spinner) spinnerView.findViewById(R.id.action_bar_spinner_id);
+		ArrayAdapter<String> adapter =	new ArrayAdapter<String>(getActionBarThemedContextCompat(),android.R.layout.simple_list_item_1, android.R.id.text1, SYSTEMS_LIST);
+		//adapter.setDropDownViewResource(android.R.layout.simple_list_item_1);
+		mSpinner.setAdapter(adapter);
 
-		    spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+		mSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 
-		        @Override
-		        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-		            // Do whatever you want with your selected item. You can get it as: parent.getItemAtPosition(position); 
-		        transmitSystemSelection(position);
-		        }
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+				// Do whatever you want with your selected item. You can get it as: parent.getItemAtPosition(position); 
+				transmitSystemSelection(position);
+			}
 
-		        @Override
-		        public void onNothingSelected(AdapterView<?> parent) {}
-		    });
+			@Override
+			public void onNothingSelected(AdapterView<?> parent) {}
+		});
 
-		    getActionBar().setIcon(getResources().getDrawable(R.drawable.ic_launcher));//set your actionbar logo
-		    getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE );
+		getActionBar().setIcon(getResources().getDrawable(R.drawable.ic_launcher));//set your actionbar logo
+		getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE );
 
-		    LayoutParams layoutParams = new ActionBar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
-		    layoutParams.gravity = Gravity.RIGHT; // set your layout's gravity to 'right'
-		    getActionBar().setCustomView(spinnerView, layoutParams);
+		LayoutParams layoutParams = new ActionBar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+		layoutParams.gravity = Gravity.RIGHT; // set your layout's gravity to 'right'
+		getActionBar().setCustomView(spinnerView, layoutParams);
+	}
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			// do something on back.
+			
+			FragmentManager aFragmentManager = this.getSupportFragmentManager();
+			
+			if (aFragmentManager.findFragmentByTag(Constants.PLAYERS_ON_PITCH_FRAGMENTTAG) != null && aFragmentManager.findFragmentByTag(Constants.PLAYERS_ON_PITCH_FRAGMENTTAG).isVisible())
+			{
+				return true;
+			}
+			/*else if (aFragmentManager.getBackStackEntryCount() > 0 && aFragmentManager.findFragmentByTag(Constants.PLAYERS_SELECTION_FRAGMENTTAG) != null && aFragmentManager.findFragmentByTag(Constants.PLAYERS_SELECTION_FRAGMENTTAG).isVisible())
+			{
+				FragmentTransaction aFragmentTransaction = aFragmentManager.beginTransaction();
+
+
+				aFragmentTransaction.remove(aFragmentManager.findFragmentByTag(Constants.PLAYERS_SELECTION_FRAGMENTTAG));
+				
+				aFragmentManager.popBackStack();
+
+				aFragmentTransaction.commit();
+				//aFragmentManager.executePendingTransactions();
+			}*/
+
+		}
+		return super.onKeyDown(keyCode, event);
 	}
 
 	/**
@@ -109,6 +144,7 @@ public class CoachActivity extends FragmentActivity implements ActionBar.OnNavig
 	@Override
 	public void onRestoreInstanceState(Bundle savedInstanceState) {
 		// Restore the previously serialized current dropdown position.
+		super.onRestoreInstanceState(savedInstanceState);
 		if (savedInstanceState.containsKey(STATE_SELECTED_NAVIGATION_ITEM)) {
 			getActionBar().setSelectedNavigationItem(
 					savedInstanceState.getInt(STATE_SELECTED_NAVIGATION_ITEM));
@@ -118,6 +154,7 @@ public class CoachActivity extends FragmentActivity implements ActionBar.OnNavig
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
 		// Serialize the current dropdown position.
+		super.onSaveInstanceState(outState);
 		outState.putInt(STATE_SELECTED_NAVIGATION_ITEM, getActionBar()
 				.getSelectedNavigationIndex());
 	}
@@ -139,39 +176,12 @@ public class CoachActivity extends FragmentActivity implements ActionBar.OnNavig
 
 	public void transmitSystemSelection(int iPosition)
 	{
-		try
-		{
-			//invoke methods of the PlayersOnPitchFragment
-			Method aMethod;
-			PlayersOnPitchFragment aPlayersOnPitchFragment  = (PlayersOnPitchFragment) this.getSupportFragmentManager().findFragmentByTag(Constants.PLAYERS_ON_PITCH_FRAGMENTTAG);
 
-			String aMethodName = "setView"+ (SYSTEMS_LIST[iPosition]).replace("-", "");
-			aMethod = aPlayersOnPitchFragment.getClass().getMethod(aMethodName);
+		PlayersOnPitchFragment aPlayersOnPitchFragment  = (PlayersOnPitchFragment) this.getSupportFragmentManager().findFragmentByTag(Constants.PLAYERS_ON_PITCH_FRAGMENTTAG);
 
-			aMethod.invoke(aPlayersOnPitchFragment);
-
-		} catch (ClassCastException e) {// not that fragment		
-			e.printStackTrace();
-		}
-		catch (SecurityException e) {
-			e.printStackTrace();
-		} catch (NoSuchMethodException eNoSuchMethodException) {
-			// ...
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-			e.printStackTrace();
-		}
-
+		aPlayersOnPitchFragment.updateSystemView((SYSTEMS_LIST[iPosition]).replace("-", ""), true);
 	}
 
-	@Override
-	public void onSystemSelected(String iSystem) {
-		// TODO Auto-generated method stub
-
-	}
 
 	@Override
 	protected void onResume() {
@@ -179,6 +189,52 @@ public class CoachActivity extends FragmentActivity implements ActionBar.OnNavig
 
 
 	}
+
+	@Override
+	public void onPosisionSelected(int viewId) {
+
+		// Create fragment and give it an argument for the selected position
+		FragmentTransaction aFragmentTransaction = this.getSupportFragmentManager().beginTransaction();
+
+		PlayerSelectionFragment aPlayerSelectionFragment = new PlayerSelectionFragment();
+		Bundle args = new Bundle();
+		args.putInt(PlayerSelectionFragment.ARG_VIEW_ID, viewId);
+		aPlayerSelectionFragment.setArguments(args);
+
+		// Replace whatever is in the fragment_container view with this fragment,
+		// and add the transaction to the back stack so the user can navigate back
+		aFragmentTransaction.replace(R.id.players_on_pitch_container, aPlayerSelectionFragment, Constants.PLAYERS_SELECTION_FRAGMENTTAG);       
+
+		aFragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+		aFragmentTransaction.addToBackStack(null);
+		// Commit the transaction
+		aFragmentTransaction.commit();
+
+	}
+
+	@Override
+	public void onPlayerSelected(int viewId, String playerName) {
+
+		FragmentTransaction aFragmentTransaction = this.getSupportFragmentManager().beginTransaction();
+
+		PlayersOnPitchFragment aPlayersOnPitchFragment  = (PlayersOnPitchFragment) this.getSupportFragmentManager().findFragmentByTag(Constants.PLAYERS_ON_PITCH_FRAGMENTTAG);		
+
+		aFragmentTransaction.replace(R.id.players_on_pitch_container, aPlayersOnPitchFragment, Constants.PLAYERS_ON_PITCH_FRAGMENTTAG);       
+
+		aFragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+		// Commit the transaction
+		aFragmentTransaction.commit();
+		//this.getSupportFragmentManager().executePendingTransactions();
+
+		//aPlayersOnPitchFragment.updateSystemView((SYSTEMS_LIST[mSpinner.getSelectedItemPosition()]).replace("-", ""));
+
+		if (!aPlayersOnPitchFragment.addPlayer(viewId, playerName))
+		{
+			Toast.makeText(this, playerName + " Already selected", Toast.LENGTH_SHORT).show();
+		}
+
+	}
+
 
 
 

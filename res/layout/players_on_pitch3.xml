@@ -1,0 +1,349 @@
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/GridLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_weight="1"
+    android:columnCount="5"
+    android:orientation="vertical"
+    android:rowCount="4"
+    android:scrollbars="none" 
+    android:isScrollContainer="false">
+
+    <LinearLayout
+        android:id="@+id/parent_player00"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <include
+            android:id="@+id/player00"
+            android:layout_width="60dip"
+            android:layout_height="60dip"
+            android:layout_gravity="center"
+            layout="@layout/player"
+            android:background="@drawable/player_selector"
+            android:clickable="true" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/parent_player01"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <include
+            android:id="@+id/player01"
+            android:layout_width="60dip"
+            android:layout_height="60dip"
+            android:layout_gravity="center"
+            layout="@layout/player"
+            android:background="@drawable/player_selector"
+            android:clickable="true" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/parent_player02"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <include
+            android:id="@+id/player02"
+            android:layout_width="60dip"
+            android:layout_height="60dip"
+            android:layout_gravity="center"
+            layout="@layout/player"
+            android:background="@drawable/player_selector"
+            android:clickable="true" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/parent_player03"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <include
+            android:id="@+id/player03"
+            android:layout_width="60dip"
+            android:layout_height="60dip"
+            android:layout_gravity="center"
+            layout="@layout/player"
+            android:background="@drawable/player_selector"
+            android:clickable="true" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/parent_player04"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <include
+            android:id="@+id/player04"
+            android:layout_width="60dip"
+            android:layout_height="60dip"
+            android:layout_gravity="center"
+            layout="@layout/player"
+            android:background="@drawable/player_selector"
+            android:clickable="true" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/parent_player10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <include
+            android:id="@+id/player10"
+            android:layout_width="60dip"
+            android:layout_height="60dip"
+            android:layout_gravity="center"
+            layout="@layout/player"
+            android:background="@drawable/player_selector"
+            android:clickable="true" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/parent_player11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <include
+            android:id="@+id/player11"
+            android:layout_width="60dip"
+            android:layout_height="60dip"
+            android:layout_gravity="center"
+            layout="@layout/player"
+            android:background="@drawable/player_selector"
+            android:clickable="true" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/parent_player12"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <include
+            android:id="@+id/player12"
+            android:layout_width="60dip"
+            android:layout_height="60dip"
+            android:layout_gravity="center"
+            layout="@layout/player"
+            android:background="@drawable/player_selector"
+            android:clickable="true" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/parent_player13"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <include
+            android:id="@+id/player13"
+            android:layout_width="60dip"
+            android:layout_height="60dip"
+            android:layout_gravity="center"
+            layout="@layout/player"
+            android:background="@drawable/player_selector"
+            android:clickable="true" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/parent_player14"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <include
+            android:id="@+id/player14"
+            android:layout_width="60dip"
+            android:layout_height="60dip"
+            android:layout_gravity="center"
+            layout="@layout/player"
+            android:background="@drawable/player_selector"
+            android:clickable="true" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/parent_player20"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <include
+            android:id="@+id/player20"
+            android:layout_width="60dip"
+            android:layout_height="60dip"
+            android:layout_gravity="center"
+            layout="@layout/player"
+            android:background="@drawable/player_selector"
+            android:clickable="true" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/parent_player21"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <include
+            android:id="@+id/player21"
+            android:layout_width="60dip"
+            android:layout_height="60dip"
+            android:layout_gravity="center"
+            layout="@layout/player"
+            android:background="@drawable/player_selector"
+            android:clickable="true" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/parent_player22"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <include
+            android:id="@+id/player22"
+            android:layout_width="60dip"
+            android:layout_height="60dip"
+            android:layout_gravity="center"
+            layout="@layout/player"
+            android:background="@drawable/player_selector"
+            android:clickable="true" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/parent_player23"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <include
+            android:id="@+id/player23"
+            android:layout_width="60dip"
+            android:layout_height="60dip"
+            android:layout_gravity="center"
+            layout="@layout/player"
+            android:background="@drawable/player_selector"
+            android:clickable="true" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/parent_player24"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/player_selector"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <include
+            android:id="@+id/player24"
+            android:layout_width="60dip"
+            android:layout_height="60dip"
+            android:layout_gravity="center"
+            layout="@layout/player"
+            android:background="@drawable/player_selector"
+            android:clickable="true" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/parent_player30"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <include
+            android:id="@+id/player30"
+            android:layout_width="60dip"
+            android:layout_height="60dip"
+            android:layout_gravity="center"
+            layout="@layout/player"
+            android:background="@drawable/player_selector" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/parent_player31"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <include
+            android:id="@+id/player31"
+            android:layout_width="60dip"
+            android:layout_height="60dip"
+            android:layout_gravity="center"
+            layout="@layout/player"
+            android:background="@drawable/player_selector" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/parent_player32"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <include
+            android:id="@+id/player32"
+            android:layout_width="60dip"
+            android:layout_height="60dip"
+            android:layout_gravity="center"
+            layout="@layout/player"
+            android:background="@drawable/player_selector" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/parent_player33"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <include
+            android:id="@+id/player33"
+            android:layout_width="60dip"
+            android:layout_height="60dip"
+            android:layout_gravity="center"
+            layout="@layout/player"
+            android:background="@drawable/player_selector" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/parent_player34"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <include
+            android:id="@+id/player34"
+            android:layout_width="60dip"
+            android:layout_height="60dip"
+            android:layout_gravity="center"
+            layout="@layout/player"
+            android:background="@drawable/player_selector" />
+    </LinearLayout>
+
+</GridLayout>

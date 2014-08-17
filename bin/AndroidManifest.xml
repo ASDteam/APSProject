@@ -5,7 +5,7 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="8"
+        android:minSdkVersion="08"
         android:targetSdkVersion="18" />
 
     <application
@@ -35,10 +35,6 @@
             android:name="com.asp.aspproject.coach.CoachActivity"
             android:label="@string/title_activity_coach"
             android:theme="@style/Theme.AppCompat.Light" >
-        </activity>
-        <activity
-            android:name="com.asp.aspproject.DropActivity"
-            android:label="@string/title_activity_drop" >
         </activity>
     </application>
 
