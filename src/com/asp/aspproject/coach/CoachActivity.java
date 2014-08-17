@@ -27,7 +27,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.asp.aspproject.R;
-import com.asp.aspproject.coach.utils.Constants;
+import com.asp.aspproject.utils.Constants;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class CoachActivity extends FragmentActivity implements ActionBar.OnNavigationListener ,  IPositionSelection, IPlayerSelection {
