@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -26,12 +29,12 @@ public class PlayerSelectionFragment extends Fragment implements OnChildClickLis
 	private PlayerSelectionAdapter mListAdapter;
 	private ExpandableListView mExpListView;
 	private List<String> mlistDataHeader;
-	private HashMap<String, List<Player>> mMapDataChild;
+	private HashMap<String, List<JSONObject>> mMapDataChild;
 
 	private IPlayerSelection mPlayerSelection;
 	private int mSelectedViewId = 0;
-	
-	
+
+
 
 
 
@@ -43,9 +46,9 @@ public class PlayerSelectionFragment extends Fragment implements OnChildClickLis
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		Bundle bundle=  getArguments(); 
-		
+
 		if (bundle != null && bundle.containsKey(PlayerSelectionFragment.ARG_VIEW_ID))
 		{
 			mSelectedViewId = bundle.getInt(PlayerSelectionFragment.ARG_VIEW_ID);
@@ -73,7 +76,7 @@ public class PlayerSelectionFragment extends Fragment implements OnChildClickLis
 			mExpListView.expandGroup(groupPosition);
 
 		mExpListView.setOnChildClickListener(this);
-	
+
 
 		return view;
 	}
@@ -82,7 +85,7 @@ public class PlayerSelectionFragment extends Fragment implements OnChildClickLis
 	public void onActivityCreated(Bundle savedInstanceState)
 	{
 		super.onActivityCreated(savedInstanceState);
-		
+
 	}
 
 
@@ -103,7 +106,7 @@ public class PlayerSelectionFragment extends Fragment implements OnChildClickLis
 
 	private void prepareListData() {
 		mlistDataHeader = new ArrayList<String>();
-		mMapDataChild = new HashMap<String, List<Player>>();
+		mMapDataChild = new HashMap<String, List<JSONObject>>();
 
 		// Adding child data
 		mlistDataHeader.add("GoalKeepers");
@@ -111,88 +114,54 @@ public class PlayerSelectionFragment extends Fragment implements OnChildClickLis
 		mlistDataHeader.add("MidleFielders");
 		mlistDataHeader.add("Strikers");
 
-		// Adding child data
-		List<Player> GoalKeepers = new ArrayList<Player>();
-		Player akeeper1 = new Player();
-		akeeper1.setmFirstName("Manuel");
-		akeeper1.setmSecondName("Nauer");
-		GoalKeepers.add(akeeper1);
-		Player akeeper2 = new Player();
-		akeeper2.setmFirstName("Ben");
-		akeeper2.setmSecondName("ben");
-		GoalKeepers.add(akeeper2);
+
+		try {
+			// Adding child data
+			List<JSONObject> GoalKeepers = new ArrayList<JSONObject>();
+			JSONObject aJsonObject = new JSONObject();
+			aJsonObject.put("firstName", "Manuel");
+
+			aJsonObject.put("secondName", "Nauer");
+			GoalKeepers.add(aJsonObject);
+
+			aJsonObject = new JSONObject();
+			aJsonObject.put("firstName", "Ben");
+			aJsonObject.put("secondName", "Ben");
+			GoalKeepers.add(aJsonObject);
 
 
-		List<Player> Defenders = new ArrayList<Player>();
-		Player aDefender1 = new Player();
-		aDefender1.setmFirstName("Alpha");
-		aDefender1.setmSecondName("Tig");
-		Defenders.add(aDefender1);
+			List<JSONObject> Defenders = new ArrayList<JSONObject>();
+			List<JSONObject> MidleFielders = new ArrayList<JSONObject>();
+			List<JSONObject> Strikers = new ArrayList<JSONObject>();
+			for (int i = 1; i < 10; i++)
+			{
+				aJsonObject = new JSONObject();
+				aJsonObject.put("firstName", "Defender");
+				aJsonObject.put("secondName", ""+i);
+				Defenders.add(aJsonObject);
 
-		Player aDefender2 = new Player();
-		aDefender2.setmFirstName("Pierre");
-		aDefender2.setmSecondName("Cabez");
-		Defenders.add(aDefender2);
+				aJsonObject = new JSONObject();
+				aJsonObject.put("firstName", "MidleFielder");
+				aJsonObject.put("secondName", ""+i);
+				MidleFielders.add(aJsonObject);
 
-		Player aDefender3 = new Player();
-		aDefender3.setmFirstName("The");
-		aDefender3.setmSecondName("Beast");
-		Defenders.add(aDefender3);
+				aJsonObject = new JSONObject();
+				aJsonObject.put("firstName", "Striker");
+				aJsonObject.put("secondName", ""+i);
+				Strikers.add(aJsonObject);
 
-		Player aDefender4 = new Player();
-		aDefender4.setmFirstName("Jerene");
-		aDefender4.setmSecondName("Tigger");
-		Defenders.add(aDefender4);
-
-		List<Player> MidleFielders = new ArrayList<Player>();
-		Player aMidleFielder1 = new Player();
-		aMidleFielder1.setmFirstName("Arnaud");
-		aMidleFielder1.setmSecondName("Schwartz");
-		MidleFielders.add(aMidleFielder1);
-
-		Player aMidleFielder2 = new Player();
-		aMidleFielder2.setmFirstName("Christopher");
-		aMidleFielder2.setmSecondName("Colombus");
-		MidleFielders.add(aMidleFielder2);
-
-		Player aMidleFielder3 = new Player();
-		aMidleFielder3.setmFirstName("Dony");
-		aMidleFielder3.setmSecondName("Betrace");
-		MidleFielders.add(aMidleFielder3);
-
-		Player aMidleFielder4 = new Player();
-		aMidleFielder4.setmFirstName("John");
-		aMidleFielder4.setmSecondName("Labre");
-		MidleFielders.add(aMidleFielder4);
+			}
 
 
-		List<Player> Strikers = new ArrayList<Player>();
-		Player aStriker1 = new Player();
-		aStriker1.setmFirstName("Striker");
-		aStriker1.setmSecondName("Force");
-		Strikers.add(aStriker1);
+			mMapDataChild.put(mlistDataHeader.get(0), GoalKeepers); // Header, Child data
+			mMapDataChild.put(mlistDataHeader.get(1), Defenders); 
+			mMapDataChild.put(mlistDataHeader.get(2), MidleFielders); 
+			mMapDataChild.put(mlistDataHeader.get(3), Strikers); 
 
-		Player aStriker2 = new Player();
-		aStriker2.setmFirstName("Carly");
-		aStriker2.setmSecondName("Istigo");
-		Strikers.add(aStriker2);
-
-		Player aStriker3 = new Player();
-		aStriker3.setmFirstName("Steva");
-		aStriker3.setmSecondName("Dano");		
-		Strikers.add(aStriker3);
-
-		Player aStriker4 = new Player();
-		aStriker4.setmFirstName("Boby");
-		aStriker4.setmSecondName("Stear");
-		Strikers.add(aStriker4);
-
-
-
-		mMapDataChild.put(mlistDataHeader.get(0), GoalKeepers); // Header, Child data
-		mMapDataChild.put(mlistDataHeader.get(1), Defenders); 
-		mMapDataChild.put(mlistDataHeader.get(2), MidleFielders); 
-		mMapDataChild.put(mlistDataHeader.get(3), Strikers); 
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 
@@ -201,11 +170,19 @@ public class PlayerSelectionFragment extends Fragment implements OnChildClickLis
 
 		if (mSelectedViewId != 0)
 		{
-			Player aPlayer = (Player) this.mMapDataChild.get(mlistDataHeader.get(groupPosition)).get(childPosition);
-			Toast.makeText(this.getActivity(), "player : " + aPlayer.getmFirstName() + "/" + aPlayer.getmSecondName(), Toast.LENGTH_SHORT).show();
+			JSONObject aJsonObject = (JSONObject) this.mMapDataChild.get(mlistDataHeader.get(groupPosition)).get(childPosition);
+			if (aJsonObject.has("firstName") && aJsonObject.has("secondName") )
+				try {
 
-			mPlayerSelection.onPlayerSelected(mSelectedViewId, aPlayer.getmFirstName() + "/" +aPlayer.getmSecondName());
+					Toast.makeText(this.getActivity(), "player : " + aJsonObject.getString("firstName")  + "/" + aJsonObject.has("secondName"), Toast.LENGTH_SHORT).show();
+
+					mPlayerSelection.onPlayerSelected(mSelectedViewId, aJsonObject.getString("firstName") + "/" + aJsonObject.getString("secondName"));
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 		}
+
 		return true;
 	}
 

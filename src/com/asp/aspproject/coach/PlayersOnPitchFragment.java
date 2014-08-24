@@ -62,6 +62,8 @@ public class PlayersOnPitchFragment extends Fragment implements OnClickListener{
 
 		mTableLayout = (TableLayout) view.findViewById(R.id.players_on_pitch_container_table);
 
+		mCurrentSysten = new SystenField("442");
+		
 		if (mCurrentSysten !=null)
 		{
 			updateSystemView(mCurrentSysten.getmSystem(), false);

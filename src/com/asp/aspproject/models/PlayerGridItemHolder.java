@@ -1,16 +1,27 @@
 package com.asp.aspproject.models;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.widget.TextView;
 
 public class PlayerGridItemHolder implements IHolder{
-	
+
 	public TextView mPlayerNameTv;
-	
+
 
 	@Override
 	public void wrapData(Object iObject) {
-		mPlayerNameTv.setText(((Player)iObject).getmFirstName() + "/" + ((Player)iObject).getmSecondName());
-		
+
+		if (((JSONObject)iObject).has("firstName") && ((JSONObject)iObject).has("secondName") )
+		{
+			try {
+				mPlayerNameTv.setText(((JSONObject)iObject).getString("firstName") + "/" + ((JSONObject)iObject).getString("secondName"));
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}		
 	}
 
 

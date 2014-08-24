@@ -1,17 +1,12 @@
 package com.asp.aspproject.models;
 
-public class Person {
-	
-	protected String mFirstName = null;
-	protected String mSecondName = null;
-	protected String mNickName = null;
-	
-	public Person(String mFirstName, String mSecondName, String mNickName) {
-		super();
-		this.mFirstName = mFirstName;
-		this.mSecondName = mSecondName;
-		this.mNickName = mNickName;
-	}
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.asp.aspproject.utils.Constants;
+
+public class Person extends JSONObject{
+
 
 	public Person() {
 		super();
@@ -19,23 +14,59 @@ public class Person {
 	}
 
 	public String getmFirstName() {
-		return mFirstName;
+		if (this.has("firstName"))
+		{
+			try {
+				return (String) this.get("firstName");
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+		return Constants.EMPTY_SRING;
 	}
-	
+
 	public void setmFirstName(String mFirstName) {
-		this.mFirstName = mFirstName;
+		try {
+			this.put("firstName", mFirstName);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 	}
 	public String getmSecondName() {
-		return mSecondName;
+		if (this.has("secondName"))
+		{
+			try {
+				return (String) this.get("secondName");
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+		return Constants.EMPTY_SRING;
 	}
 	public void setmSecondName(String mSecondName) {
-		this.mSecondName = mSecondName;
+		try {
+			this.put("secondName", mSecondName);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 	}
 	public String getmNickName() {
-		return mNickName;
+		if (this.has("nickName"))
+		{
+			try {
+				return (String) this.get("nickName");
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+		return Constants.EMPTY_SRING;
 	}
 	public void setmNickName(String mNickName) {
-		this.mNickName = mNickName;
+		try {
+			this.put("nickName", mNickName);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

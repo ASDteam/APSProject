@@ -3,6 +3,8 @@ package com.asp.aspproject.adapters;
 import java.util.HashMap;
 import java.util.List;
 
+import org.json.JSONObject;
+
 import android.content.Context;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
@@ -21,10 +23,10 @@ public class PlayerSelectionAdapter extends BaseExpandableListAdapter {
 	private Context mContext;
 	private List<String> mListDataHeader; // header titles
 	// child data in format of header title, child title
-	private HashMap<String, List<Player>> mMapDataChild;
+	private HashMap<String, List<JSONObject>> mMapDataChild;
 
 	public PlayerSelectionAdapter(Context iContext, List<String> iListDataHeader,
-			HashMap<String, List<Player>> iMapChildData) {
+			HashMap<String, List<JSONObject>> iMapChildData) {
 		this.mContext = iContext;
 		this.mListDataHeader = iListDataHeader;
 		this.mMapDataChild = iMapChildData;
@@ -46,7 +48,7 @@ public class PlayerSelectionAdapter extends BaseExpandableListAdapter {
 	public View getChildView(int iGroupPosition, final int iChildPosition,
 			boolean isLastChild, View iConvertView, ViewGroup parent) {
 
-		final Player aPlayer = (Player) getChild(iGroupPosition, iChildPosition);
+		final JSONObject aJsonObject = (JSONObject) getChild(iGroupPosition, iChildPosition);
 
 		PlayerListItemHolder aPlayerItemHolder = null;
 
@@ -66,7 +68,7 @@ public class PlayerSelectionAdapter extends BaseExpandableListAdapter {
 			aPlayerItemHolder = (PlayerListItemHolder) iConvertView.getTag();
 		}
 
-		aPlayerItemHolder.wrapData(aPlayer);
+		aPlayerItemHolder.wrapData(aJsonObject);
 
 		return iConvertView;
 	}

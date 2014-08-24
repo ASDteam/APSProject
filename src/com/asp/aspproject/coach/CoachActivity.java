@@ -1,8 +1,5 @@
 package com.asp.aspproject.coach;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
@@ -10,31 +7,37 @@ import android.app.ActionBar.LayoutParams;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.asp.aspproject.R;
+import com.asp.aspproject.request.RequestHandler;
 import com.asp.aspproject.utils.Constants;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-public class CoachActivity extends FragmentActivity implements ActionBar.OnNavigationListener ,  IPositionSelection, IPlayerSelection {
+public class CoachActivity extends ActionBarActivity implements ActionBar.OnNavigationListener ,  IPositionSelection, IPlayerSelection, OnClickListener {
 
-	private IPositionSelection mSystemSelection;
 
 	private Spinner mSpinner = null;
+
+	private View mActionBarCustomContainer = null;
+
+	private Button mSaveTeamBt = null;
 
 	/**
 	 * The serialization (saved instance state) Bundle key representing the
@@ -56,6 +59,11 @@ public class CoachActivity extends FragmentActivity implements ActionBar.OnNavig
 		aFragmentTransaction.add(R.id.players_on_pitch_container, aPlayersOnPitchFragment, Constants.PLAYERS_ON_PITCH_FRAGMENTTAG);
 		aFragmentTransaction.commit();
 
+		String aUrl =  "http://api.geonames.org/findNearbyPostalCodesJSON?postalcode=8775&country=CH&radius=10&username=demo";
+
+		RequestHandler mRequestHandler = new RequestHandler(aUrl, null, this, "getDataResonse", this);
+		mRequestHandler.getData();
+
 		// Set up the action bar to show a dropdown list.
 		/*final ActionBar actionBar = getActionBar();
 		actionBar.setDisplayShowTitleEnabled(false);
@@ -71,8 +79,11 @@ public class CoachActivity extends FragmentActivity implements ActionBar.OnNavig
 
 		LayoutInflater inflater = (LayoutInflater) this.getActionBarThemedContextCompat().getSystemService(LAYOUT_INFLATER_SERVICE);
 
-		final View spinnerView = inflater.inflate(R.layout.action_bar_spinner, null);
-		mSpinner = (Spinner) spinnerView.findViewById(R.id.action_bar_spinner_id);
+		mActionBarCustomContainer = inflater.inflate(R.layout.action_bar_spinner, null);
+		mSpinner = (Spinner) mActionBarCustomContainer.findViewById(R.id.action_bar_spinner_id);
+		mSaveTeamBt = (Button) mActionBarCustomContainer.findViewById(R.id.action_bar_save_button);
+
+
 		ArrayAdapter<String> adapter =	new ArrayAdapter<String>(getActionBarThemedContextCompat(),android.R.layout.simple_list_item_1, android.R.id.text1, SYSTEMS_LIST);
 		//adapter.setDropDownViewResource(android.R.layout.simple_list_item_1);
 		mSpinner.setAdapter(adapter);
@@ -94,7 +105,19 @@ public class CoachActivity extends FragmentActivity implements ActionBar.OnNavig
 
 		LayoutParams layoutParams = new ActionBar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
 		layoutParams.gravity = Gravity.RIGHT; // set your layout's gravity to 'right'
-		getActionBar().setCustomView(spinnerView, layoutParams);
+		getActionBar().setCustomView(mActionBarCustomContainer, layoutParams);
+
+		mSaveTeamBt.setOnClickListener(this);
+	}
+
+	public void getDataResonse(Object object)
+	{
+
+		if (object != null)
+		{
+			Log.e("CoachActivity:getDataResonse", (String)object);
+		}
+
 	}
 
 	@Override
@@ -102,25 +125,27 @@ public class CoachActivity extends FragmentActivity implements ActionBar.OnNavig
 
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			// do something on back.
-			
+
 			FragmentManager aFragmentManager = this.getSupportFragmentManager();
-			
+
 			if (aFragmentManager.findFragmentByTag(Constants.PLAYERS_ON_PITCH_FRAGMENTTAG) != null && aFragmentManager.findFragmentByTag(Constants.PLAYERS_ON_PITCH_FRAGMENTTAG).isVisible())
 			{
 				return true;
 			}
-			/*else if (aFragmentManager.getBackStackEntryCount() > 0 && aFragmentManager.findFragmentByTag(Constants.PLAYERS_SELECTION_FRAGMENTTAG) != null && aFragmentManager.findFragmentByTag(Constants.PLAYERS_SELECTION_FRAGMENTTAG).isVisible())
+			else if (aFragmentManager.getBackStackEntryCount() > 0 && aFragmentManager.findFragmentByTag(Constants.PLAYERS_SELECTION_FRAGMENTTAG) != null && aFragmentManager.findFragmentByTag(Constants.PLAYERS_SELECTION_FRAGMENTTAG).isVisible())
 			{
-				FragmentTransaction aFragmentTransaction = aFragmentManager.beginTransaction();
+				mActionBarCustomContainer.setVisibility(View.VISIBLE);
+
+				/*FragmentTransaction aFragmentTransaction = aFragmentManager.beginTransaction();
 
 
 				aFragmentTransaction.remove(aFragmentManager.findFragmentByTag(Constants.PLAYERS_SELECTION_FRAGMENTTAG));
-				
+
 				aFragmentManager.popBackStack();
 
 				aFragmentTransaction.commit();
-				//aFragmentManager.executePendingTransactions();
-			}*/
+				//aFragmentManager.executePendingTransactions();*/
+			}
 
 		}
 		return super.onKeyDown(keyCode, event);
@@ -187,7 +212,6 @@ public class CoachActivity extends FragmentActivity implements ActionBar.OnNavig
 	protected void onResume() {
 		super.onResume();
 
-
 	}
 
 	@Override
@@ -210,6 +234,9 @@ public class CoachActivity extends FragmentActivity implements ActionBar.OnNavig
 		// Commit the transaction
 		aFragmentTransaction.commit();
 
+		//system selection only available on players on pitch view
+		mActionBarCustomContainer.setVisibility(View.GONE);
+
 	}
 
 	@Override
@@ -231,6 +258,25 @@ public class CoachActivity extends FragmentActivity implements ActionBar.OnNavig
 		if (!aPlayersOnPitchFragment.addPlayer(viewId, playerName))
 		{
 			Toast.makeText(this, playerName + " Already selected", Toast.LENGTH_SHORT).show();
+		}
+
+		//system selection only available on players on pitch view
+		mActionBarCustomContainer.setVisibility(View.VISIBLE);
+
+
+	}
+
+
+
+	@Override
+	public void onClick(View view) {
+		switch (view.getId())
+		{
+		case R.id.action_bar_save_button:
+			Toast.makeText(this, "Not yet implemented", Toast.LENGTH_SHORT).show();
+			break;
+		default:
+			break;
 		}
 
 	}

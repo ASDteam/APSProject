@@ -7,5 +7,5 @@ public class Constants {
 	
 	public static final String PLAYERS_SELECTION_FRAGMENTTAG = "PLAYERS_SELECTION_FRAGMENTTAG";
 	
-	
+	public static final String EMPTY_SRING="";
 }

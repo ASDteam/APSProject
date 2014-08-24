@@ -1,45 +1,93 @@
 package com.asp.aspproject.models;
 
-public class User extends Person{
-	
+import org.json.JSONException;
 
-	protected String mEmail = null;
-	protected String mPassword = null;
-	protected String mCreationDate = null;
-	protected String mID = null;
-	
+import com.asp.aspproject.utils.Constants;
+
+public class User extends Person{
+
+
+
 	public User() {
 		super();
 	}
-	public User(String mFirstName, String mSecondName, String mNickName) {
-	}
+
+
 	public String getmEmail() {
-		return mEmail;
+		if (this.has("email"))
+		{
+			try {
+				return (String) this.get("email");
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+		return Constants.EMPTY_SRING;
 	}
 	public void setmEmail(String mEmail) {
-		this.mEmail = mEmail;
+		try {
+			this.put("email", mEmail);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 	}
 	public String getmPassword() {
-		return mPassword;
+		if (this.has("password"))
+		{
+			try {
+				return (String) this.get("password");
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+		return Constants.EMPTY_SRING;
 	}
 	public void setmPassword(String mPassword) {
-		this.mPassword = mPassword;
+		try {
+			this.put("password", mPassword);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 	}
 	public String getmCreationDate() {
-		return mCreationDate;
+		if (this.has("creationDate"))
+		{
+			try {
+				return (String) this.get("creationDate");
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+		return Constants.EMPTY_SRING;
 	}
 	public void setmCreationDate(String mCreationDate) {
-		this.mCreationDate = mCreationDate;
+		try {
+			this.put("creationDate", mCreationDate);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 	}
 	public String getmID() {
-		return mID;
+		if (this.has("id"))
+		{
+			try {
+				return (String) this.get("id");
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+		return Constants.EMPTY_SRING;
 	}
 	public void setmID(String mID) {
-		this.mID = mID;
+		try {
+			this.put("id", mID);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 	}
-	
-	
-	
-	
+
+
+
+
 
 }
