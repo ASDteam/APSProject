@@ -1,12 +1,12 @@
 package com.asp.aspproject.adapters;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import org.json.JSONObject;
 
 import android.content.Context;
-import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +14,6 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
 import com.asp.aspproject.R;
-import com.asp.aspproject.models.Player;
 import com.asp.aspproject.models.PlayerHeaderHolder;
 import com.asp.aspproject.models.PlayerListItemHolder;
 
@@ -23,10 +22,10 @@ public class PlayerSelectionAdapter extends BaseExpandableListAdapter {
 	private Context mContext;
 	private List<String> mListDataHeader; // header titles
 	// child data in format of header title, child title
-	private HashMap<String, List<JSONObject>> mMapDataChild;
+	private HashMap<String, ArrayList<JSONObject>> mMapDataChild;
 
 	public PlayerSelectionAdapter(Context iContext, List<String> iListDataHeader,
-			HashMap<String, List<JSONObject>> iMapChildData) {
+			HashMap<String, ArrayList<JSONObject>> iMapChildData) {
 		this.mContext = iContext;
 		this.mListDataHeader = iListDataHeader;
 		this.mMapDataChild = iMapChildData;
@@ -45,7 +44,7 @@ public class PlayerSelectionAdapter extends BaseExpandableListAdapter {
 
 
 	@Override
-	public View getChildView(int iGroupPosition, final int iChildPosition,
+	public View getChildView(final int iGroupPosition, final int iChildPosition,
 			boolean isLastChild, View iConvertView, ViewGroup parent) {
 
 		final JSONObject aJsonObject = (JSONObject) getChild(iGroupPosition, iChildPosition);
@@ -58,8 +57,9 @@ public class PlayerSelectionAdapter extends BaseExpandableListAdapter {
 
 			iConvertView = infalInflater.inflate(R.layout.player_item, null);
 
-			aPlayerItemHolder = new PlayerListItemHolder();
+			aPlayerItemHolder = new PlayerListItemHolder(mContext);
 			aPlayerItemHolder.setmPlayerNameTv((TextView)iConvertView.findViewById(R.id.player_name_in_item));
+			aPlayerItemHolder.setmPlayerMalusTv((TextView)iConvertView.findViewById(R.id.player_malus_in_item));
 			iConvertView.setTag(aPlayerItemHolder);
 
 		}
@@ -132,6 +132,7 @@ public class PlayerSelectionAdapter extends BaseExpandableListAdapter {
 	public boolean isChildSelectable(int groupPosition, int childPosition) {
 		return true;
 	}
+
 
 
 

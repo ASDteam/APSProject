@@ -3,6 +3,7 @@ package com.asp.aspproject.coach;
 public interface IPositionSelection {
 	
 	
-	public void onPosisionSelected(int viewId);
+
+	public void onPosisionSelected(int viewId, String placeOnPitch);
 
 }

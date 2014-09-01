@@ -15,5 +15,10 @@
     <string name="system352">"3\-5\-2" </string>
     <string name="system343">"3\-4\-3" </string>
     <string name="title_activity_player_selection">Player Selection</string>
+    <string name="label_goalkeepers">Goalkeepers</string>
+    <string name="label_defenders">Defenders</string>
+    <string name="label_midlefielders">MiddleFielders</string>
+    <string name="label_strikers">Strikers</string>
+    <string name="malus">Malus</string>
 
 </resources>

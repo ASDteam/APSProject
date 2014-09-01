@@ -12,6 +12,11 @@ public class SystenField {
 		super();
 		this.mSystem = mSystem;
 	}
+	
+	public SystenField() {
+		super();
+		mSystem = "";
+	}
 
 	public String getmSystem() {
 		return mSystem;

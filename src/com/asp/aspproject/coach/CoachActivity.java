@@ -1,5 +1,7 @@
 package com.asp.aspproject.coach;
 
+import org.json.JSONObject;
+
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
@@ -10,7 +12,6 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -26,7 +27,6 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.asp.aspproject.R;
-import com.asp.aspproject.request.RequestHandler;
 import com.asp.aspproject.utils.Constants;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -53,16 +53,7 @@ public class CoachActivity extends ActionBarActivity implements ActionBar.OnNavi
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_coach);
 
-		FragmentManager aFragmentManager = this.getSupportFragmentManager();
-		FragmentTransaction aFragmentTransaction = aFragmentManager.beginTransaction();
-		PlayersOnPitchFragment aPlayersOnPitchFragment = new PlayersOnPitchFragment();
-		aFragmentTransaction.add(R.id.players_on_pitch_container, aPlayersOnPitchFragment, Constants.PLAYERS_ON_PITCH_FRAGMENTTAG);
-		aFragmentTransaction.commit();
 
-		String aUrl =  "http://api.geonames.org/findNearbyPostalCodesJSON?postalcode=8775&country=CH&radius=10&username=demo";
-
-		RequestHandler mRequestHandler = new RequestHandler(aUrl, null, this, "getDataResonse", this);
-		mRequestHandler.getData();
 
 		// Set up the action bar to show a dropdown list.
 		/*final ActionBar actionBar = getActionBar();
@@ -108,17 +99,22 @@ public class CoachActivity extends ActionBarActivity implements ActionBar.OnNavi
 		getActionBar().setCustomView(mActionBarCustomContainer, layoutParams);
 
 		mSaveTeamBt.setOnClickListener(this);
+
+		FragmentManager aFragmentManager = this.getSupportFragmentManager();
+		FragmentTransaction aFragmentTransaction = aFragmentManager.beginTransaction();
+		PlayersOnPitchFragment aPlayersOnPitchFragment = new PlayersOnPitchFragment();
+
+		Bundle args = new Bundle();
+
+		args.putString(PlayersOnPitchFragment.CURRENT_SYSTEM, (SYSTEMS_LIST[mSpinner.getSelectedItemPosition()]).replace("-", ""));
+
+		aPlayersOnPitchFragment.setArguments(args);
+
+		aFragmentTransaction.add(R.id.players_on_pitch_container, aPlayersOnPitchFragment, Constants.PLAYERS_ON_PITCH_FRAGMENTTAG);
+		aFragmentTransaction.commit();
+
 	}
 
-	public void getDataResonse(Object object)
-	{
-
-		if (object != null)
-		{
-			Log.e("CoachActivity:getDataResonse", (String)object);
-		}
-
-	}
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -130,7 +126,7 @@ public class CoachActivity extends ActionBarActivity implements ActionBar.OnNavi
 
 			if (aFragmentManager.findFragmentByTag(Constants.PLAYERS_ON_PITCH_FRAGMENTTAG) != null && aFragmentManager.findFragmentByTag(Constants.PLAYERS_ON_PITCH_FRAGMENTTAG).isVisible())
 			{
-				return true;
+				finish();
 			}
 			else if (aFragmentManager.getBackStackEntryCount() > 0 && aFragmentManager.findFragmentByTag(Constants.PLAYERS_SELECTION_FRAGMENTTAG) != null && aFragmentManager.findFragmentByTag(Constants.PLAYERS_SELECTION_FRAGMENTTAG).isVisible())
 			{
@@ -215,7 +211,7 @@ public class CoachActivity extends ActionBarActivity implements ActionBar.OnNavi
 	}
 
 	@Override
-	public void onPosisionSelected(int viewId) {
+	public void onPosisionSelected(int viewId, String placeOnPitch) {
 
 		// Create fragment and give it an argument for the selected position
 		FragmentTransaction aFragmentTransaction = this.getSupportFragmentManager().beginTransaction();
@@ -223,6 +219,7 @@ public class CoachActivity extends ActionBarActivity implements ActionBar.OnNavi
 		PlayerSelectionFragment aPlayerSelectionFragment = new PlayerSelectionFragment();
 		Bundle args = new Bundle();
 		args.putInt(PlayerSelectionFragment.ARG_VIEW_ID, viewId);
+		args.putString(PlayerSelectionFragment.ARG_VIEW_POSITION, placeOnPitch);
 		aPlayerSelectionFragment.setArguments(args);
 
 		// Replace whatever is in the fragment_container view with this fragment,
@@ -240,7 +237,7 @@ public class CoachActivity extends ActionBarActivity implements ActionBar.OnNavi
 	}
 
 	@Override
-	public void onPlayerSelected(int viewId, String playerName) {
+	public void onPlayerSelected(int viewId, JSONObject player) {
 
 		FragmentTransaction aFragmentTransaction = this.getSupportFragmentManager().beginTransaction();
 
@@ -255,9 +252,9 @@ public class CoachActivity extends ActionBarActivity implements ActionBar.OnNavi
 
 		//aPlayersOnPitchFragment.updateSystemView((SYSTEMS_LIST[mSpinner.getSelectedItemPosition()]).replace("-", ""));
 
-		if (!aPlayersOnPitchFragment.addPlayer(viewId, playerName))
+		if (!aPlayersOnPitchFragment.addPlayer(viewId, player))
 		{
-			Toast.makeText(this, playerName + " Already selected", Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, player.toString() + " Already selected", Toast.LENGTH_SHORT).show();
 		}
 
 		//system selection only available on players on pitch view

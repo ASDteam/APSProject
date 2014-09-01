@@ -3,14 +3,18 @@ package com.asp.aspproject.coach;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.Iterator;
+import java.util.Vector;
 import java.util.Map.Entry;
 
-import android.R.integer;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,10 +24,10 @@ import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.asp.aspproject.R;
 import com.asp.aspproject.field.SystenField;
+import com.asp.aspproject.models.PlayerSelection;
 import com.asp.aspproject.utils.Constants;
 
 public class PlayersOnPitchFragment extends Fragment implements OnClickListener{
@@ -38,7 +42,9 @@ public class PlayersOnPitchFragment extends Fragment implements OnClickListener{
 
 	private SystenField mCurrentSysten = null;
 
-	private HashMap<String, Integer> mSelectedPlayers = null;
+	private PlayerSelection mPlayerSelection= null;
+
+	private HashMap<Integer, JSONObject> mSelectedPlayers = null;
 
 
 
@@ -51,6 +57,20 @@ public class PlayersOnPitchFragment extends Fragment implements OnClickListener{
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Bundle bundle=  getArguments(); 
+
+		if (bundle != null)
+		{
+			if ( bundle.containsKey(CURRENT_SYSTEM))
+			{
+				mCurrentSysten = new SystenField(bundle.getString(CURRENT_SYSTEM));
+				mPlayerSelection = new PlayerSelection(mCurrentSysten);
+
+			}
+		}
+
+
+
 	}
 
 
@@ -62,20 +82,19 @@ public class PlayersOnPitchFragment extends Fragment implements OnClickListener{
 
 		mTableLayout = (TableLayout) view.findViewById(R.id.players_on_pitch_container_table);
 
-		mCurrentSysten = new SystenField("442");
-		
-		if (mCurrentSysten !=null)
+		if (mCurrentSysten != null)
 		{
 			updateSystemView(mCurrentSysten.getmSystem(), false);
 
 			if (mSelectedPlayers != null && !mSelectedPlayers.isEmpty())
 			{
-				for (Entry<String, Integer> entry : mSelectedPlayers.entrySet()) {
+				for (Entry<Integer, JSONObject> entry : mSelectedPlayers.entrySet()) {
 
-					updatePosition(entry.getValue(), entry.getKey());
+					updatePosition(entry.getKey(), entry.getValue());
 				} 
 			}
 		}
+
 
 		return view;
 	}
@@ -118,7 +137,8 @@ public class PlayersOnPitchFragment extends Fragment implements OnClickListener{
 	{
 		Log.d(Constants.PLAYERS_ON_PITCH_FRAGMENTTAG, "setView442");
 
-		mCurrentSysten = new SystenField("442");
+		mCurrentSysten.setmSystem("442");
+		mPlayerSelection.init442();
 
 		initViews(cleanView);
 
@@ -137,7 +157,8 @@ public class PlayersOnPitchFragment extends Fragment implements OnClickListener{
 	{
 		Log.d(Constants.PLAYERS_ON_PITCH_FRAGMENTTAG, "setView433");
 
-		mCurrentSysten = new SystenField("433");
+		mCurrentSysten.setmSystem("433");
+		mPlayerSelection.init433();
 
 		initViews(cleanView);
 
@@ -158,7 +179,8 @@ public class PlayersOnPitchFragment extends Fragment implements OnClickListener{
 	{
 		Log.d(Constants.PLAYERS_ON_PITCH_FRAGMENTTAG, "setView451");
 
-		mCurrentSysten = new SystenField("451");
+		mCurrentSysten.setmSystem("451");
+		mPlayerSelection.init451();
 
 		initViews(cleanView);
 
@@ -177,7 +199,8 @@ public class PlayersOnPitchFragment extends Fragment implements OnClickListener{
 	{
 		Log.d(Constants.PLAYERS_ON_PITCH_FRAGMENTTAG, "setView541");
 
-		mCurrentSysten = new SystenField("541");
+		mCurrentSysten.setmSystem("541");
+		mPlayerSelection.init541();
 
 		initViews(cleanView);
 
@@ -196,7 +219,8 @@ public class PlayersOnPitchFragment extends Fragment implements OnClickListener{
 	{
 		Log.d(Constants.PLAYERS_ON_PITCH_FRAGMENTTAG, "setView532");
 
-		mCurrentSysten = new SystenField("532");
+		mCurrentSysten.setmSystem("532");
+		mPlayerSelection.init532();
 
 		initViews(cleanView);
 
@@ -214,7 +238,8 @@ public class PlayersOnPitchFragment extends Fragment implements OnClickListener{
 	{
 		Log.d(Constants.PLAYERS_ON_PITCH_FRAGMENTTAG, "setView523");
 
-		mCurrentSysten = new SystenField("523");
+		mCurrentSysten.setmSystem("523");		
+		mPlayerSelection.init523();
 
 		initViews(cleanView);
 
@@ -232,7 +257,8 @@ public class PlayersOnPitchFragment extends Fragment implements OnClickListener{
 	{
 		Log.d(Constants.PLAYERS_ON_PITCH_FRAGMENTTAG, "setView343");
 
-		mCurrentSysten = new SystenField("343");
+		mCurrentSysten.setmSystem("343");
+		mPlayerSelection.init343();
 
 		initViews(cleanView);
 
@@ -251,6 +277,9 @@ public class PlayersOnPitchFragment extends Fragment implements OnClickListener{
 	{
 		Log.d(Constants.PLAYERS_ON_PITCH_FRAGMENTTAG, "setView352");
 
+		mCurrentSysten.setmSystem("352");
+		mPlayerSelection.init352();
+
 		initViews(cleanView);
 
 		int[] a352List = {/*striker */R.id.parent_player00, R.id.parent_player01, 
@@ -267,7 +296,7 @@ public class PlayersOnPitchFragment extends Fragment implements OnClickListener{
 
 
 	public void initViews(boolean cleanView){
-		
+
 		if (cleanView && mSelectedPlayers !=null)
 		{
 			mSelectedPlayers.clear();
@@ -350,10 +379,10 @@ public class PlayersOnPitchFragment extends Fragment implements OnClickListener{
 	public void onClick(View view) {
 
 		//Toast.makeText(PlayersOnPitchFragment.this.getActivity(), "view : " + view.getId(), Toast.LENGTH_SHORT).show();
-		mPositionSelection.onPosisionSelected(view.getId());
+		mPositionSelection.onPosisionSelected(view.getId(), mPlayerSelection.getmPositions().get(view.getId()));
 	}
 
-	public void updatePosition(int viewId, String playerName)
+	public void updatePosition(int viewId, JSONObject player)
 	{
 
 		for (int rowIndex = 0; rowIndex < mTableLayout.getChildCount(); rowIndex++) {
@@ -369,14 +398,64 @@ public class PlayersOnPitchFragment extends Fragment implements OnClickListener{
 						View aPlayerView = ((ViewGroup) aPlayerContaniner).getChildAt(0);
 						if (viewId == aPlayerView.getId())
 						{
-							((TextView)aPlayerView.findViewById(R.id.id_player_name)).setText(playerName);
-							break;
+							String playerName = null;
+							int playerMalus = 0;
+
+							if (player.has("name"))
+							{
+								try {
+
+									playerName = player.getString("name");
+
+									if ((playerName.split(" ")).length > 0)
+									{
+										playerName = playerName.split(" ")[1];
+									}
+
+
+									JSONObject aProfiles = (JSONObject)player.get("profile");
+
+									Iterator<?> keys = aProfiles.keys();
+
+									while( keys.hasNext() ){
+										String key = (String)keys.next();
+										if( aProfiles.get(key) instanceof JSONObject ){
+											JSONObject aProfile = (JSONObject)aProfiles.get(key);
+											if (aProfile.has("malus"))
+											{
+												playerMalus = aProfile.getInt("malus");
+
+											}
+										}
+									}
+									if (playerName != null)
+									{
+										((TextView)aPlayerView.findViewById(R.id.id_player_name)).setText(Html.fromHtml(playerName));
+										
+										TextView textView = ((TextView)aPlayerView.findViewById(R.id.id_player_malus));
+										
+										if (playerMalus != 0)
+										{
+											textView.setVisibility(View.VISIBLE);
+											textView.setText(this.getString(R.string.malus) + " " + playerMalus);										
+
+										}
+										else
+										{
+											textView.setVisibility(View.GONE);
+										}
+										break;
+									}
+								} catch (JSONException e) {
+									e.printStackTrace();
+								}
+							}
 						}
 					}
 				}
 			}
-
 		}
+
 
 	}
 
@@ -419,33 +498,39 @@ public class PlayersOnPitchFragment extends Fragment implements OnClickListener{
 
 	}
 
-	public boolean addPlayer(int viewId, String playerName)
+	public boolean addPlayer(int viewId, JSONObject player)
 	{
 		if (mSelectedPlayers == null)
 		{
-			mSelectedPlayers = new HashMap<String, Integer>();
+			mSelectedPlayers = new HashMap<Integer, JSONObject>();
 		}
-		
-		for (Entry<String, Integer> entry : mSelectedPlayers.entrySet()) {
 
-			if (entry.getValue() == viewId)
-			{
-				//if viewId exist in map => second click on the same view
-				mSelectedPlayers.remove(entry.getKey());
-				break;
+		for (Entry<Integer, JSONObject> entry : mSelectedPlayers.entrySet()) {
+
+			//if the player to add already exist -> return false
+
+			JSONObject existingPlayer = entry.getValue();
+			try {
+				if (existingPlayer.has("name") && player.has("name")
+						&& existingPlayer.getString("name").equals(player.getString("name")))
+				{
+					return false;
+				}
+			} catch (JSONException e) {
+				e.printStackTrace();
 			}
-			
+
 		} 
 
-		if (!mSelectedPlayers.containsKey(playerName))
+
+		if (mSelectedPlayers.containsKey(viewId))
 		{
-			mSelectedPlayers.put(playerName,viewId);
-			return true;
+			//if viewId exist in map => second click on the same view
+			mSelectedPlayers.remove(viewId);
 		}
-		else
-		{			
-			return false;
-		}
+
+		mSelectedPlayers.put(viewId, player);
+		return true;
 
 	}
 
